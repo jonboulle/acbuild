@@ -17,8 +17,8 @@ package libacb
 import (
 	"github.com/appc/acbuild/libacb/util"
 
-	"github.com/appc/spec/schema"
-	"github.com/appc/spec/schema/types"
+	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema"
+	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema/types"
 )
 
 func removeDep(imageName types.ACIdentifier) func(*schema.ImageManifest) {

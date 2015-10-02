@@ -17,9 +17,9 @@ package util
 import (
 	"io/ioutil"
 	"os"
-    "path"
+	"path"
 
-	"github.com/appc/spec/schema"
+	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema"
 )
 
 func GetManifest(acipath string) (*schema.ImageManifest, error) {
@@ -27,14 +27,14 @@ func GetManifest(acipath string) (*schema.ImageManifest, error) {
 	if err != nil {
 		return nil, err
 	}
-    defer acifile.Close()
+	defer acifile.Close()
 
-    manblob, err := ioutil.ReadAll(acifile)
-    if err != nil {
-        return nil, err
-    }
+	manblob, err := ioutil.ReadAll(acifile)
+	if err != nil {
+		return nil, err
+	}
 
-    man := &schema.ImageManifest{}
+	man := &schema.ImageManifest{}
 	err = man.UnmarshalJSON(manblob)
 	if err != nil {
 		return nil, err
@@ -56,11 +56,11 @@ func ModifyManifest(fn func(*schema.ImageManifest), acipath string) error {
 		return err
 	}
 
-    manfile, err := os.OpenFile(path.Join(acipath, "manifest"), os.O_WRONLY | os.O_TRUNC, 0644)
+	manfile, err := os.OpenFile(path.Join(acipath, "manifest"), os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		return err
 	}
-    defer manfile.Close()
+	defer manfile.Close()
 
 	_, err = manfile.Write(blob)
 	if err != nil {
