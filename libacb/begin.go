@@ -53,7 +53,7 @@ func Begin(tmpaci string, start *string) error {
 			return fmt.Errorf("start aci doesn't exist: %s", *start)
 		}
 
-		err = util.ExpandACI(*start, tmpaci)
+		err = util.UnTar(*start, tmpaci, nil)
 		if err != nil {
 			return err
 		}
@@ -79,25 +79,21 @@ func Begin(tmpaci string, start *string) error {
 
 	manblob, err := manifest.MarshalJSON()
 	if err != nil {
-		err = util.RmIfPossible(tmpaci, err)
 		return err
 	}
 
 	manfile, err := os.Create(path.Join(tmpaci, "manifest"))
 	if err != nil {
-		err = util.RmIfPossible(tmpaci, err)
 		return err
 	}
 
 	_, err = manfile.Write(manblob)
 	if err != nil {
-		err = util.RmIfPossible(tmpaci, err)
 		return err
 	}
 
 	err = manfile.Close()
 	if err != nil {
-		err = util.RmIfPossible(tmpaci, err)
 		return err
 	}
 

@@ -22,10 +22,12 @@ import (
 	"path"
 	"strings"
 
+	"github.com/appc/acbuild/libacb/registry"
 	"github.com/appc/acbuild/libacb/util"
 )
 
-var pathlist = []string{"/usr/local/sbin", "/usr/local/bin", "/usr/sbin", "/usr/bin", "/sbin", "/bin"}
+var pathlist = []string{"/usr/local/sbin", "/usr/local/bin", "/usr/sbin",
+	"/usr/bin", "/sbin", "/bin"}
 
 func Exec(acipath, depstore, targetpath, scratchpath, workpath string, cmd []string, insecure bool) error {
 	err := util.RmAndMkdir(targetpath)
@@ -58,11 +60,12 @@ func Exec(acipath, depstore, targetpath, scratchpath, workpath string, cmd []str
 			return err
 		}
 		if !supportsOverlay() {
-			return fmt.Errorf("overlayfs support required for using exec with dependencies")
+			return fmt.Errorf(
+				"overlayfs support required for using exec with dependencies")
 		}
 	}
 
-	deps, err := util.RenderACI(acipath, scratchpath, depstore, insecure)
+	deps, err := renderACI(acipath, scratchpath, depstore, insecure)
 	if err != nil {
 		return err
 	}
@@ -71,12 +74,13 @@ func Exec(acipath, depstore, targetpath, scratchpath, workpath string, cmd []str
 	if deps == nil {
 		nspawnpath = path.Join(acipath, "rootfs")
 	} else {
-		//TODO: escape colons
 		for i, dep := range deps {
-			deps[i] = path.Join(dep, "/rootfs")
+			deps[i] = path.Join(scratchpath, dep, "rootfs")
 		}
-		options := "-olowerdir=" + strings.Join(deps, ":") + ",upperdir=" + path.Join(acipath, "/rootfs") + ",workdir=" + workpath
-		err := util.Exec("mount", "-t", "overlay", "overlay", options, targetpath)
+		options := "-olowerdir=" + strings.Join(deps, ":") +
+			",upperdir=" + path.Join(acipath, "rootfs") + ",workdir=" + workpath
+		err := util.Exec("mount", "-t", "overlay",
+			"overlay", options, targetpath)
 		if err != nil {
 			return err
 		}
@@ -149,4 +153,71 @@ func findCmdInPath(pathlist []string, cmd, prefix string) (string, error) {
 		}
 	}
 	return "", fmt.Errorf("%s not found in any of: %v", cmd, pathlist)
+}
+
+func renderACI(acipath, scratchpath, depstore string, insecure bool) ([]string, error) {
+	reg := registry.Registry{
+		Depstore:    depstore,
+		Scratchpath: scratchpath,
+		Insecure:    insecure,
+	}
+
+	man, err := util.GetManifest(acipath)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(man.Dependencies) == 0 {
+		return nil, nil
+	}
+
+	var deplist []string
+	for _, dep := range man.Dependencies {
+		err := reg.FetchAndRender(dep.ImageName, dep.Labels, dep.Size)
+		if err != nil {
+			return nil, err
+		}
+
+		depkey, err := reg.GetACI(dep.ImageName, dep.Labels)
+		if err != nil {
+			return nil, err
+		}
+
+		subdeplist, err := genDeplist(path.Join(scratchpath, depkey), reg)
+		if err != nil {
+			return nil, err
+		}
+		deplist = append(deplist, subdeplist...)
+	}
+
+	return deplist, nil
+}
+
+func genDeplist(acipath string, reg registry.Registry) ([]string, error) {
+	man, err := util.GetManifest(acipath)
+	if err != nil {
+		return nil, err
+	}
+	key, err := reg.GetACI(man.Name, man.Labels)
+	if err != nil {
+		fmt.Printf("Name: %s", man.Name)
+		return nil, err
+	}
+
+	var deps []string
+	for _, dep := range man.Dependencies {
+		depkey, err := reg.GetACI(dep.ImageName, dep.Labels)
+		if err != nil {
+			return nil, err
+		}
+
+		subdeps, err := genDeplist(path.Join(reg.Scratchpath, depkey), reg)
+		if err != nil {
+			return nil, err
+		}
+		deps = append(deps, subdeps...)
+	}
+
+	deps = append(deps, key)
+	return deps, nil
 }
