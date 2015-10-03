@@ -40,12 +40,7 @@ func AddAnnotation(acipath, name, value string) error {
 	}
 
 	fn := func(s *schema.ImageManifest) {
-		removeAnnotation(*acid)(s)
-		s.Annotations = append(s.Annotations,
-			types.Annotation{
-				Name:  *acid,
-				Value: value,
-			})
+		s.Annotations.Set(*acid, value)
 	}
 	return util.ModifyManifest(fn, acipath)
 }

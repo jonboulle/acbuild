@@ -30,7 +30,7 @@ var (
 	placeholdername = "acbuild-unnamed"
 )
 
-func Begin(tmpaci string, start *string) error {
+func Begin(tmpaci, start string) error {
 	ex, err := util.Exists(tmpaci)
 	if err != nil {
 		return err
@@ -44,16 +44,16 @@ func Begin(tmpaci string, start *string) error {
 		return err
 	}
 
-	if start != nil {
-		ex, err := util.Exists(*start)
+	if start != "" {
+		ex, err := util.Exists(start)
 		if err != nil {
 			return err
 		}
 		if !ex {
-			return fmt.Errorf("start aci doesn't exist: %s", *start)
+			return fmt.Errorf("start aci doesn't exist: %s", start)
 		}
 
-		err = util.UnTar(*start, tmpaci, nil)
+		err = util.UnTar(start, tmpaci, nil)
 		if err != nil {
 			return err
 		}

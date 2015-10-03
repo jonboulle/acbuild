@@ -53,7 +53,7 @@ func runEnd(cmd *cobra.Command, args []string) (exit int) {
 		stderr("Ending build. Writing completed ACI to %s", args[0])
 	}
 
-	err := libacb.End(tmpaci(), args[0], path.Join(contextpath, workprefix), flagFinOverwrite)
+	err := libacb.End(tmpacipath(), args[0], path.Join(contextpath, workprefix), flagFinOverwrite)
 
 	if err != nil {
 		stderr("end: %v", err)

@@ -38,15 +38,10 @@ func removeFromEnv(name string) func(*schema.ImageManifest) {
 
 func AddEnv(acipath, name, value string) error {
 	fn := func(s *schema.ImageManifest) {
-		removeFromEnv(name)(s)
 		if s.App == nil {
 			s.App = &types.App{}
 		}
-		s.App.Environment = append(s.App.Environment,
-			types.EnvironmentVariable{
-				Name:  name,
-				Value: value,
-			})
+		s.App.Environment.Set(name, value)
 	}
 	return util.ModifyManifest(fn, acipath)
 }

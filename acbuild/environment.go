@@ -55,18 +55,18 @@ func runAddEnv(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 2 {
-		stderr("add-env: incorrect number of arguments")
+		stderr("environment add: incorrect number of arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Adding environment variable \"%s\"=\"%s\"", args[0], args[1])
+		stderr("Adding environment variable %q=%q", args[0], args[1])
 	}
 
-	err := libacb.AddEnv(tmpaci(), args[0], args[1])
+	err := libacb.AddEnv(tmpacipath(), args[0], args[1])
 
 	if err != nil {
-		stderr("add-env: %v", err)
+		stderr("environment add: %v", err)
 		return 1
 	}
 
@@ -79,18 +79,18 @@ func runRemoveEnv(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) > 1 {
-		stderr("rm-env: too many arguments")
+		stderr("environment remove: too many arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Removing environment variable \"%s\"", args[0])
+		stderr("Removing environment variable %q", args[0])
 	}
 
-	err := libacb.RemoveEnv(tmpaci(), args[0])
+	err := libacb.RemoveEnv(tmpacipath(), args[0])
 
 	if err != nil {
-		stderr("rm-env: %v", err)
+		stderr("environment remove: %v", err)
 		return 1
 	}
 

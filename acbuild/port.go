@@ -61,23 +61,23 @@ func runAddPort(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 3 {
-		stderr("add-port: incorrect number of arguments")
+		stderr("port add: incorrect number of arguments")
 		return 1
 	}
 	port, err := strconv.ParseUint(args[2], 10, 16)
 	if err != nil {
-		stderr("add-port: port must be a positive number between 0 and 65535")
+		stderr("port add: port must be a positive number between 0 and 65535")
 		return 1
 	}
 
 	if debug {
-		stderr("Adding port \"%s\"=\"%s\"", args[0], args[1])
+		stderr("Adding port %q=%q", args[0], args[1])
 	}
 
-	err = libacb.AddPort(tmpaci(), args[0], args[1], uint(port), count, socketActivated)
+	err = libacb.AddPort(tmpacipath(), args[0], args[1], uint(port), count, socketActivated)
 
 	if err != nil {
-		stderr("add-port: %v", err)
+		stderr("port add: %v", err)
 		return 1
 	}
 
@@ -90,18 +90,18 @@ func runRmPort(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 1 {
-		stderr("rm-port: too many arguments")
+		stderr("port remove: too many arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Removing port \"%s\"", args[0])
+		stderr("Removing port %q", args[0])
 	}
 
-	err := libacb.RemovePort(tmpaci(), args[0])
+	err := libacb.RemovePort(tmpacipath(), args[0])
 
 	if err != nil {
-		stderr("rm-port: %v", err)
+		stderr("port remove: %v", err)
 		return 1
 	}
 

@@ -44,7 +44,7 @@ func runSetRun(cmd *cobra.Command, args []string) (exit int) {
 		stderr("Setting run command %v", args)
 	}
 
-	err := libacb.SetRun(tmpaci(), args)
+	err := libacb.SetRun(tmpacipath(), args)
 
 	if err != nil {
 		stderr("set-run: %v", err)

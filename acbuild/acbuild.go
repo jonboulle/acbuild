@@ -54,7 +54,7 @@ var (
 	cmdExitCode int
 )
 
-func tmpaci() string {
+func tmpacipath() string {
 	return path.Join(contextpath, workprefix, "currentaci")
 }
 

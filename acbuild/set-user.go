@@ -48,7 +48,7 @@ func runSetUser(cmd *cobra.Command, args []string) (exit int) {
 		stderr("Setting user to %s", args[0])
 	}
 
-	err := libacb.SetUser(tmpaci(), args[0])
+	err := libacb.SetUser(tmpacipath(), args[0])
 
 	if err != nil {
 		stderr("set-user: %v", err)

@@ -48,7 +48,7 @@ func runSetGroup(cmd *cobra.Command, args []string) (exit int) {
 		stderr("Setting group to %s", args[0])
 	}
 
-	err := libacb.SetGroup(tmpaci(), args[0])
+	err := libacb.SetGroup(tmpacipath(), args[0])
 
 	if err != nil {
 		stderr("set-group: %v", err)

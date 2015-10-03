@@ -66,12 +66,12 @@ func runAddDep(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 1 {
-		stderr("add-dep: too many arguments")
+		stderr("dependency add: too many arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Adding dependency \"%s\"=\"%s\"", args[0], args[1])
+		stderr("Adding dependency %q=%q", args[0], args[1])
 	}
 
 	appcLabels := make(types.Labels, len(labels))
@@ -82,10 +82,10 @@ func runAddDep(cmd *cobra.Command, args []string) (exit int) {
 		}
 	}
 
-	err := libacb.AddDependency(tmpaci(), args[0], imageId, appcLabels, size)
+	err := libacb.AddDependency(tmpacipath(), args[0], imageId, appcLabels, size)
 
 	if err != nil {
-		stderr("add-dep: %v", err)
+		stderr("dependency add: %v", err)
 		return 1
 	}
 
@@ -98,18 +98,18 @@ func runRmDep(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 1 {
-		stderr("rm-dep: too many arguments")
+		stderr("dependency remove: too many arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Removing dependency \"%s\"", args[0])
+		stderr("Removing dependency %q", args[0])
 	}
 
-	err := libacb.RemoveDependency(tmpaci(), args[0])
+	err := libacb.RemoveDependency(tmpacipath(), args[0])
 
 	if err != nil {
-		stderr("rm-dep: %v", err)
+		stderr("dependency-remove: %v", err)
 		return 1
 	}
 
@@ -129,7 +129,7 @@ func (ls *labellist) String() string {
 func (ls *labellist) Set(input string) error {
 	parts := strings.SplitN(input, "=", 2)
 	if len(parts) != 2 {
-		return fmt.Errorf("no '=' character in \"%s\"", input)
+		return fmt.Errorf("no '=' character in %q", input)
 	}
 	*ls = append(*ls, types.Label{
 		Name:  types.ACIdentifier(parts[0]),

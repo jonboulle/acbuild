@@ -50,9 +50,9 @@ func runBegin(cmd *cobra.Command, args []string) (exit int) {
 
 	var err error
 	if len(args) == 0 {
-		err = libacb.Begin(tmpaci(), nil)
+		err = libacb.Begin(tmpacipath(), "")
 	} else {
-		err = libacb.Begin(tmpaci(), &args[0])
+		err = libacb.Begin(tmpacipath(), args[0])
 	}
 
 	if err != nil {

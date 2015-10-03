@@ -54,18 +54,18 @@ func runAddLabel(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 2 {
-		stderr("add-label: incorrect number of arguments")
+		stderr("label add: incorrect number of arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Adding label \"%s\"=\"%s\"", args[0], args[1])
+		stderr("Adding label %q=%q", args[0], args[1])
 	}
 
-	err := libacb.AddLabel(tmpaci(), args[0], args[1])
+	err := libacb.AddLabel(tmpacipath(), args[0], args[1])
 
 	if err != nil {
-		stderr("add-label: %v", err)
+		stderr("label add: %v", err)
 		return 1
 	}
 
@@ -78,18 +78,18 @@ func runRemoveLabel(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 1 {
-		stderr("rm-label: too many arguments")
+		stderr("label remove: too many arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Removing label \"%s\"", args[0])
+		stderr("Removing label %q", args[0])
 	}
 
-	err := libacb.RemoveLabel(tmpaci(), args[0])
+	err := libacb.RemoveLabel(tmpacipath(), args[0])
 
 	if err != nil {
-		stderr("rm-label: %v", err)
+		stderr("label remove: %v", err)
 		return 1
 	}
 

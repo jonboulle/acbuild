@@ -48,7 +48,7 @@ func runSetName(cmd *cobra.Command, args []string) (exit int) {
 		stderr("Setting name of ACI to %s", args[0])
 	}
 
-	err := libacb.SetName(tmpaci(), args[0])
+	err := libacb.SetName(tmpacipath(), args[0])
 
 	if err != nil {
 		stderr("set-name: %v", err)

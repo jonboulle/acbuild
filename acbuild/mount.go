@@ -57,22 +57,22 @@ func runAddMount(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 2 {
-		stderr("add-mount: incorrect number of arguments")
+		stderr("mount add: incorrect number of arguments")
 		return 1
 	}
 
 	if debug {
 		if readOnly {
-			stderr("Adding read only mount point \"%s\"=\"%s\"", args[0], args[1])
+			stderr("Adding read only mount point %q=%q", args[0], args[1])
 		} else {
-			stderr("Adding mount point \"%s\"=\"%s\"", args[0], args[1])
+			stderr("Adding mount point %q=%q", args[0], args[1])
 		}
 	}
 
-	err := libacb.AddMount(tmpaci(), args[0], args[1], readOnly)
+	err := libacb.AddMount(tmpacipath(), args[0], args[1], readOnly)
 
 	if err != nil {
-		stderr("add-mount: %v", err)
+		stderr("mount add: %v", err)
 		return 1
 	}
 
@@ -85,18 +85,18 @@ func runRmMount(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 1 {
-		stderr("rm-mount: too many arguments")
+		stderr("mount remove too many arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Removing mount point \"%s\"", args[0])
+		stderr("Removing mount point %q", args[0])
 	}
 
-	err := libacb.RemoveMount(tmpaci(), args[0])
+	err := libacb.RemoveMount(tmpacipath(), args[0])
 
 	if err != nil {
-		stderr("rm-mount: %v", err)
+		stderr("mount remove %v", err)
 		return 1
 	}
 

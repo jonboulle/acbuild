@@ -55,18 +55,18 @@ func runAddAnno(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 2 {
-		stderr("add-anno: incorrect number of arguments")
+		stderr("annotation add: incorrect number of arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Adding annotation \"%s\"=\"%s\"", args[0], args[1])
+		stderr("Adding annotation %q=%q", args[0], args[1])
 	}
 
-	err := libacb.AddAnnotation(tmpaci(), args[0], args[1])
+	err := libacb.AddAnnotation(tmpacipath(), args[0], args[1])
 
 	if err != nil {
-		stderr("add-anno: %v", err)
+		stderr("annotation add: %v", err)
 		return 1
 	}
 
@@ -79,18 +79,18 @@ func runRmAnno(cmd *cobra.Command, args []string) (exit int) {
 		return 1
 	}
 	if len(args) != 1 {
-		stderr("rm-anno: too many arguments")
+		stderr("annotation remove: too many arguments")
 		return 1
 	}
 
 	if debug {
-		stderr("Removing annotation \"%s\"", args[0])
+		stderr("Removing annotation %q", args[0])
 	}
 
-	err := libacb.RemoveAnnotation(tmpaci(), args[0])
+	err := libacb.RemoveAnnotation(tmpacipath(), args[0])
 
 	if err != nil {
-		stderr("rm-anno: %v", err)
+		stderr("annotation remove: %v", err)
 		return 1
 	}
 

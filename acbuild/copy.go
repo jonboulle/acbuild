@@ -47,7 +47,7 @@ func runCopy(cmd *cobra.Command, args []string) (exit int) {
 		stderr("Copying host:%s to aci:%s", args[0], args[1])
 	}
 
-	err := libacb.Copy(tmpaci(), args[0], args[1])
+	err := libacb.Copy(tmpacipath(), args[0], args[1])
 
 	if err != nil {
 		stderr("copy: %v", err)
