@@ -36,6 +36,9 @@ func removeFromEnv(name string) func(*schema.ImageManifest) {
 	}
 }
 
+// AddEnv will add an environment variable with the given name and value to the
+// untarred ACI stored at acipath. If the environment variable already exists
+// its value will be updated to the new value.
 func AddEnv(acipath, name, value string) error {
 	fn := func(s *schema.ImageManifest) {
 		if s.App == nil {
@@ -46,6 +49,8 @@ func AddEnv(acipath, name, value string) error {
 	return util.ModifyManifest(fn, acipath)
 }
 
+// RemoveEnv will remove the environment variable with the given name from the
+// untarred ACI stored at acipath
 func RemoveEnv(acipath, name string) error {
 	return util.ModifyManifest(removeFromEnv(name), acipath)
 }

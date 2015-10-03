@@ -20,6 +20,8 @@ import (
 	"github.com/appc/acbuild/libacb/util"
 )
 
+// Copy will copy the directory/file at from to the path to inside the untarred
+// ACI at acipath.
 func Copy(acipath, from, to string) error {
 	err := util.Exec("cp", "-r", from, path.Join(acipath, "rootfs", to))
 	return err

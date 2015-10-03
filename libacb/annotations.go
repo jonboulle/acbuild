@@ -33,6 +33,9 @@ func removeAnnotation(name types.ACIdentifier) func(*schema.ImageManifest) {
 	}
 }
 
+// AddAnnotation will add an annotation with the given name and value to the
+// untarred ACI stored at acipath. If the annotation already exists its value
+// will be updated to the new value.
 func AddAnnotation(acipath, name, value string) error {
 	acid, err := types.NewACIdentifier(name)
 	if err != nil {
@@ -45,6 +48,8 @@ func AddAnnotation(acipath, name, value string) error {
 	return util.ModifyManifest(fn, acipath)
 }
 
+// RemoveAnnotation will remove the annotation with the given name from the
+// untarred ACI stored at acipath
 func RemoveAnnotation(acipath, name string) error {
 	acid, err := types.NewACIdentifier(name)
 	if err != nil {

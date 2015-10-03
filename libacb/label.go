@@ -33,6 +33,9 @@ func removeLabelFromMan(name types.ACIdentifier) func(*schema.ImageManifest) {
 	}
 }
 
+// AddLabel will add a label with the given name and value to the untarred ACI
+// stored at acipath. If the label already exists its value will be updated to
+// the new value.
 func AddLabel(acipath, name, value string) error {
 	acid, err := types.NewACIdentifier(name)
 	if err != nil {
@@ -50,6 +53,8 @@ func AddLabel(acipath, name, value string) error {
 	return util.ModifyManifest(fn, acipath)
 }
 
+// RemoveLabel will remove the label with the given name from the untarred ACI
+// stored at acipath
 func RemoveLabel(acipath, name string) error {
 	acid, err := types.NewACIdentifier(name)
 	if err != nil {

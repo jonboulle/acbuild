@@ -50,6 +50,9 @@ func (r Registry) tmpuncompressedpath() string {
 	return path.Join(r.Depstore, "tmp.uncompressed.aci")
 }
 
+// FetchAndRender will fetch the given image and all of its dependencies if
+// they have not been fetched yet, and will then render them on to the
+// filesystem if they have not been rendered yet.
 func (r Registry) FetchAndRender(imagename types.ACIdentifier, labels types.Labels, size uint) error {
 	_, err := r.GetACI(imagename, labels)
 	if err == ErrNotFound {

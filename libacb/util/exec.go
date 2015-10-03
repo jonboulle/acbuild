@@ -20,6 +20,8 @@ import (
 	"os/exec"
 )
 
+// Exec will execute the given binary with the given args, sending all messages
+// from the binary's stdout and stderr to this program's stdout and stderr.
 func Exec(bin string, args ...string) error {
 	//fmt.Printf("Execing: %s %v\n", bin, args)
 	cmd := exec.Command(bin, args...)

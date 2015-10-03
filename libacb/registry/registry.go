@@ -89,10 +89,12 @@ func (r Registry) HashToKey(h hash.Hash) string {
 	return fmt.Sprintf("%s%x", hashPrefix, s)
 }
 
+// Returns the manifest for the ACI with the given key
 func (r Registry) GetImageManifest(key string) (*schema.ImageManifest, error) {
 	return util.GetManifest(path.Join(r.Scratchpath, key))
 }
 
+// Returns the key for the ACI with the given name and labels
 func (r Registry) GetACI(name types.ACIdentifier, labels types.Labels) (string, error) {
 	files, err := ioutil.ReadDir(r.Scratchpath)
 	if err != nil {

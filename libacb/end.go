@@ -26,6 +26,9 @@ import (
 	"github.com/appc/acbuild/libacb/util"
 )
 
+// End will end the build, storing the untarred ACI stored at tmpaci into
+// output. The files at contextpath will be removed, to end the build. If
+// overwrite is true, an error will not be thrown if output already exists.
 func End(tmpaci, output, contextpath string, overwrite bool) error {
 	man, err := util.GetManifest(tmpaci)
 	if err != nil {

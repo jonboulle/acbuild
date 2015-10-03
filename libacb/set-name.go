@@ -21,6 +21,7 @@ import (
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema/types"
 )
 
+// SetName sets the name for the untarred ACI stored at acipath
 func SetName(acipath, name string) error {
 	acid, err := types.NewACIdentifier(name)
 	if err != nil {

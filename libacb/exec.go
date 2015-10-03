@@ -29,6 +29,11 @@ import (
 var pathlist = []string{"/usr/local/sbin", "/usr/local/bin", "/usr/sbin",
 	"/usr/bin", "/sbin", "/bin"}
 
+// Exec will execute the given command in the ACI being built. acipath is where
+// the untarred ACI is stored, depstore is the directory to download
+// dependencies into, scratchpath is where the dependencies are expanded into,
+// workpath is the work directory used by overlayfs, and insecure signifies
+// whether downloaded images should be fetched over http or https.
 func Exec(acipath, depstore, targetpath, scratchpath, workpath string, cmd []string, insecure bool) error {
 	err := util.RmAndMkdir(targetpath)
 	if err != nil {

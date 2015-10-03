@@ -36,6 +36,10 @@ func removeMount(name types.ACName) func(*schema.ImageManifest) {
 	}
 }
 
+// AddMount will add a mount point with the given name and path to the untarred
+// ACI stored at acipath. If the mount point already exists its value will be
+// updated to the new value. readOnly signifies whether or not the mount point
+// should be read only.
 func AddMount(acipath, name, path string, readOnly bool) error {
 	acn, err := types.NewACName(name)
 	if err != nil {
@@ -57,6 +61,8 @@ func AddMount(acipath, name, path string, readOnly bool) error {
 	return util.ModifyManifest(fn, acipath)
 }
 
+// RemoveMount will remove the mount point with the given name from the
+// untarred ACI stored at acipath
 func RemoveMount(acipath, name string) error {
 	acn, err := types.NewACName(name)
 	if err != nil {

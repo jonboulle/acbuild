@@ -22,6 +22,7 @@ import (
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema"
 )
 
+// GetManifest will read in the manifest from the untarred ACI stored at acipath
 func GetManifest(acipath string) (*schema.ImageManifest, error) {
 	acifile, err := os.Open(path.Join(acipath, "manifest"))
 	if err != nil {
@@ -43,6 +44,9 @@ func GetManifest(acipath string) (*schema.ImageManifest, error) {
 	return man, nil
 }
 
+// ModifyManifest will read in the manifest from the untarred ACI stored at
+// acipath, run the fn function (which is intended to modify the manifest), and
+// then write the resulting manifest back to the file it was read from.
 func ModifyManifest(fn func(*schema.ImageManifest), acipath string) error {
 	man, err := GetManifest(acipath)
 	if err != nil {

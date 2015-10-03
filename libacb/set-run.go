@@ -21,6 +21,7 @@ import (
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema/types"
 )
 
+// SetRun sets the run command for the untarred ACI stored at acipath.
 func SetRun(acipath string, cmd []string) error {
 	fn := func(s *schema.ImageManifest) {
 		if s.App == nil {

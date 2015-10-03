@@ -22,6 +22,7 @@ import (
 	"path"
 )
 
+// MkdirIfMissing makes a directory at path if one does not exist.
 func MkdirIfMissing(path string) error {
 	ex, err := Exists(path)
 	if err != nil {
@@ -36,6 +37,8 @@ func MkdirIfMissing(path string) error {
 	return nil
 }
 
+// RmAndMkdir will remove anything at path if it exists, and then create a
+// directory at path.
 func RmAndMkdir(path string) error {
 	ex, err := Exists(path)
 	if err != nil {
@@ -58,6 +61,7 @@ func RmAndMkdir(path string) error {
 	return nil
 }
 
+// Exists will return whether or not anything exists at path
 func Exists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if err == nil {
@@ -68,6 +72,8 @@ func Exists(path string) (bool, error) {
 	return true, err
 }
 
+// UnTar will extract the contents at the tar file at tarpath to the directory
+// at dst. If fileMap is set, only files in it will be extracted.
 func UnTar(tarpath, dst string, fileMap map[string]struct{}) error {
 	tarfile, err := os.Open(tarpath)
 	if err != nil {

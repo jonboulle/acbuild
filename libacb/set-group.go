@@ -21,6 +21,8 @@ import (
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema/types"
 )
 
+// SetGroup sets the group the pod will run as in the untarred ACI stored at
+// acipath.
 func SetGroup(acipath, group string) error {
 	fn := func(s *schema.ImageManifest) {
 		if s.App == nil {

@@ -33,6 +33,9 @@ func removeDep(imageName types.ACIdentifier) func(*schema.ImageManifest) {
 	}
 }
 
+// AddDependency will add a dependency with the given name, id, labels, and size
+// to the untarred ACI stored at acipath. If the dependency already exists its
+// fields will be updated to the new values.
 func AddDependency(acipath, imageName, imageId string, labels types.Labels, size uint) error {
 	acid, err := types.NewACIdentifier(imageName)
 	if err != nil {
@@ -61,6 +64,8 @@ func AddDependency(acipath, imageName, imageId string, labels types.Labels, size
 	return util.ModifyManifest(fn, acipath)
 }
 
+// RemoveDependency will remove the dependency with the given name from the
+// untarred ACI stored at acipath
 func RemoveDependency(acipath, imageName string) error {
 	acid, err := types.NewACIdentifier(imageName)
 	if err != nil {

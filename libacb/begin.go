@@ -30,6 +30,9 @@ var (
 	placeholdername = "acbuild-unnamed"
 )
 
+// Begin will start a new build, storing the untarred ACI the build operates on
+// at tmpaci. If start is the empty string, the build will begin with an empty
+// ACI, otherwise the ACI stored at start will be used at the starting point.
 func Begin(tmpaci, start string) error {
 	ex, err := util.Exists(tmpaci)
 	if err != nil {

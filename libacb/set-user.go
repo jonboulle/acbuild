@@ -21,6 +21,8 @@ import (
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema/types"
 )
 
+// SetUser sets the user the pod will run as in the untarred ACI stored at
+// acipath.
 func SetUser(acipath, user string) error {
 	fn := func(s *schema.ImageManifest) {
 		if s.App == nil {

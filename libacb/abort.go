@@ -21,6 +21,8 @@ import (
 	"github.com/appc/acbuild/libacb/util"
 )
 
+// Abort will abort the current build, given the path that the build resources
+// are stored at. An error will be thrown if no build is in progress.
 func Abort(contextpath string) error {
 	ex, err := util.Exists(contextpath)
 	if err != nil {

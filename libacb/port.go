@@ -36,6 +36,10 @@ func removePort(name types.ACName) func(*schema.ImageManifest) {
 	}
 }
 
+// AddPort will add a port with the given name, protocol, port, and count to
+// the untarred ACI stored at acipath. If the port already exists its value
+// will be updated to the new value. socketActivated signifies whether or not
+// the application will be socket activated via this port.
 func AddPort(acipath, name, protocol string, port, count uint, socketActivated bool) error {
 	acn, err := types.NewACName(name)
 	if err != nil {
@@ -59,6 +63,8 @@ func AddPort(acipath, name, protocol string, port, count uint, socketActivated b
 	return util.ModifyManifest(fn, acipath)
 }
 
+// RemovePort will remove the port with the given name from the untarred ACI
+// stored at acipath.
 func RemovePort(acipath, name string) error {
 	acn, err := types.NewACName(name)
 	if err != nil {
