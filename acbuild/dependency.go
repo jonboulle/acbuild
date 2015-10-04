@@ -71,7 +71,7 @@ func runAddDep(cmd *cobra.Command, args []string) (exit int) {
 	}
 
 	if debug {
-		stderr("Adding dependency %q=%q", args[0], args[1])
+		stderr("Adding dependency %q", args[0])
 	}
 
 	appcLabels := make(types.Labels, len(labels))
