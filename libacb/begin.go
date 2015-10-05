@@ -33,7 +33,7 @@ var (
 // Begin will start a new build, storing the untarred ACI the build operates on
 // at tmpaci. If start is the empty string, the build will begin with an empty
 // ACI, otherwise the ACI stored at start will be used at the starting point.
-func Begin(tmpaci, start string) error {
+func Begin(tmpaci, start string, debug bool) error {
 	ex, err := util.Exists(tmpaci)
 	if err != nil {
 		return err
@@ -56,7 +56,7 @@ func Begin(tmpaci, start string) error {
 			return fmt.Errorf("start aci doesn't exist: %s", start)
 		}
 
-		err = util.UnTar(start, tmpaci, nil)
+		err = util.UnTar(start, tmpaci, nil, start, debug)
 		if err != nil {
 			return err
 		}

@@ -25,13 +25,11 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"time"
 
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/aci"
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/discovery"
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/pkg/acirenderer"
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/appc/spec/schema/types"
-	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/coreos/ioprogress"
 	"github.com/appc/acbuild/Godeps/_workspace/src/xi2.org/x/xz"
 
 	"github.com/appc/acbuild/libacb/util"
@@ -79,7 +77,8 @@ func (r Registry) FetchAndRender(imagename types.ACIdentifier, labels types.Labe
 		}
 
 		err = util.UnTar(path.Join(r.Depstore, fs.Key),
-			path.Join(r.Scratchpath, fs.Key), fs.FileMap)
+			path.Join(r.Scratchpath, fs.Key), fs.FileMap, string(imagename),
+			r.Debug)
 		if err != nil {
 			return err
 		}
@@ -118,7 +117,7 @@ func (r Registry) fetchACIWithSize(imagename types.ACIdentifier, labels types.La
 		}
 	}
 
-	err = r.uncompress()
+	err = r.uncompress(string(imagename))
 	if err != nil {
 		return err
 	}
@@ -180,7 +179,7 @@ func (r Registry) fetchACIWithSize(imagename types.ACIdentifier, labels types.La
 }
 
 // Need to uncompress the file to be able to generate the Image ID
-func (r Registry) uncompress() error {
+func (r Registry) uncompress(name string) error {
 	acifile, err := os.Open(r.tmppath())
 	if err != nil {
 		return err
@@ -199,33 +198,37 @@ func (r Registry) uncompress() error {
 	}
 
 	var in io.Reader
-	switch typ {
-	case aci.TypeGzip:
-		in, err = gzip.NewReader(acifile)
-		if err != nil {
-			return err
-		}
-	case aci.TypeBzip2:
-		in = bzip2.NewReader(acifile)
-	case aci.TypeXz:
-		in, err = xz.NewReader(acifile, 0)
-		if err != nil {
-			return err
-		}
-	case aci.TypeTar:
-		in = acifile
-	case aci.TypeText:
-		return fmt.Errorf("downloaded ACI is text, not a tarball")
-	case aci.TypeUnknown:
-		return fmt.Errorf("downloaded ACI is of an unknown type")
-	}
 
 	if r.Debug {
 		finfo, err := acifile.Stat()
 		if err != nil {
 			return err
 		}
-		in = newIoprogress("Uncompressing", finfo.Size(), in)
+		in = util.NewIoprogress(fmt.Sprintf("Uncompressing %s", name),
+			finfo.Size(), acifile)
+	} else {
+		in = acifile
+	}
+
+	switch typ {
+	case aci.TypeGzip:
+		in, err = gzip.NewReader(in)
+		if err != nil {
+			return err
+		}
+	case aci.TypeBzip2:
+		in = bzip2.NewReader(in)
+	case aci.TypeXz:
+		in, err = xz.NewReader(in, 0)
+		if err != nil {
+			return err
+		}
+	case aci.TypeTar:
+		break
+	case aci.TypeText:
+		return fmt.Errorf("downloaded ACI is text, not a tarball")
+	case aci.TypeUnknown:
+		return fmt.Errorf("downloaded ACI is of an unknown type")
 	}
 
 	out, err := os.OpenFile(r.tmpuncompressedpath(),
@@ -384,7 +387,7 @@ func (r Registry) download(url, path, label string) error {
 		return err
 	}
 
-	reader := newIoprogress(label, res.ContentLength, res.Body)
+	reader := util.NewIoprogress("Downloading "+label, res.ContentLength, res.Body)
 
 	_, err = io.Copy(out, reader)
 	if err != nil {
@@ -402,34 +405,4 @@ func (r Registry) download(url, path, label string) error {
 	}
 
 	return nil
-}
-
-func newIoprogress(label string, size int64, rdr io.Reader) io.Reader {
-	prefix := "Downloading " + label
-	fmtBytesSize := 18
-	barSize := int64(80 - len(prefix) - fmtBytesSize)
-	bar := ioprogress.DrawTextFormatBarForW(barSize, os.Stderr)
-	fmtfunc := func(progress, total int64) string {
-		// Content-Length is set to -1 when unknown.
-		if total == -1 {
-			return fmt.Sprintf(
-				"%s: %v of an unknown total size",
-				prefix,
-				ioprogress.ByteUnitStr(progress),
-			)
-		}
-		return fmt.Sprintf(
-			"%s: %s %s",
-			prefix,
-			bar(progress, total),
-			ioprogress.DrawTextFormatBytes(progress, total),
-		)
-	}
-
-	return &ioprogress.Reader{
-		Reader:       rdr,
-		Size:         size,
-		DrawFunc:     ioprogress.DrawTerminalf(os.Stderr, fmtfunc),
-		DrawInterval: time.Second,
-	}
 }

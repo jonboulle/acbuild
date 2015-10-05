@@ -47,7 +47,8 @@ func runExec(cmd *cobra.Command, args []string) (exit int) {
 		stderr("Execing: %v", args)
 	}
 
-	err := libacb.Exec(tmpacipath(), depstorepath(), targetpath(), scratchpath(), workpath(), args, insecure)
+	err := libacb.Exec(tmpacipath(), depstorepath(), targetpath(),
+		scratchpath(), workpath(), args, insecure, debug)
 
 	if err != nil {
 		stderr("exec: %v", err)

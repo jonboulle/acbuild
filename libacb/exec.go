@@ -34,7 +34,7 @@ var pathlist = []string{"/usr/local/sbin", "/usr/local/bin", "/usr/sbin",
 // dependencies into, scratchpath is where the dependencies are expanded into,
 // workpath is the work directory used by overlayfs, and insecure signifies
 // whether downloaded images should be fetched over http or https.
-func Exec(acipath, depstore, targetpath, scratchpath, workpath string, cmd []string, insecure bool) error {
+func Exec(acipath, depstore, targetpath, scratchpath, workpath string, cmd []string, insecure, debug bool) error {
 	err := util.RmAndMkdir(targetpath)
 	if err != nil {
 		return err
@@ -70,7 +70,7 @@ func Exec(acipath, depstore, targetpath, scratchpath, workpath string, cmd []str
 		}
 	}
 
-	deps, err := renderACI(acipath, scratchpath, depstore, insecure)
+	deps, err := renderACI(acipath, scratchpath, depstore, insecure, debug)
 	if err != nil {
 		return err
 	}
@@ -160,11 +160,12 @@ func findCmdInPath(pathlist []string, cmd, prefix string) (string, error) {
 	return "", fmt.Errorf("%s not found in any of: %v", cmd, pathlist)
 }
 
-func renderACI(acipath, scratchpath, depstore string, insecure bool) ([]string, error) {
+func renderACI(acipath, scratchpath, depstore string, insecure, debug bool) ([]string, error) {
 	reg := registry.Registry{
 		Depstore:    depstore,
 		Scratchpath: scratchpath,
 		Insecure:    insecure,
+		Debug:       debug,
 	}
 
 	man, err := util.GetManifest(acipath)
