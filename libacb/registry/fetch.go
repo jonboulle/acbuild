@@ -154,6 +154,12 @@ func (r Registry) fetchACIWithSize(imagename types.ACIdentifier, labels types.La
 		return err
 	}
 
+	if man.Name != imagename {
+		return fmt.Errorf(
+			"downloaded ACI name %q does not match expected image name %q",
+			man.Name, imagename)
+	}
+
 	for _, dep := range man.Dependencies {
 		err := r.fetchACIWithSize(dep.ImageName, dep.Labels, dep.Size)
 		if err != nil {
