@@ -22,6 +22,7 @@ import (
 	"text/tabwriter"
 	"text/template"
 
+	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/coreos/rkt/pkg/multicall"
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/spf13/cobra"
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/spf13/pflag"
 )
@@ -137,6 +138,9 @@ func runWrapper(cf func(cmd *cobra.Command, args []string) (exit int)) func(cmd 
 }
 
 func main() {
+	// check if acbuild is executed with a multicall command
+	multicall.MaybeExec()
+
 	cmdAcbuild.SetUsageFunc(usageFunc)
 
 	// Make help just show the usage

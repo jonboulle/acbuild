@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/appc/acbuild/Godeps/_workspace/src/github.com/coreos/ioprogress"
@@ -114,6 +115,10 @@ func NewIoprogress(label string, size int64, rdr io.Reader) io.Reader {
 // UnTar will extract the contents at the tar file at tarpath to the directory
 // at dst. If fileMap is set, only files in it will be extracted.
 func UnTar(tarpath, dst string, fileMap map[string]struct{}, name string, debug bool) error {
+	dst, err := filepath.Abs(dst)
+	if err != nil {
+		return err
+	}
 	tarfile, err := os.Open(tarpath)
 	if err != nil {
 		return err
